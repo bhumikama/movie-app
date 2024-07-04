@@ -1,7 +1,5 @@
 import { movies } from "./storemovies.js";
 
-//const movieComments = {};
-
 function createMovieCard(movie) {
   const card = document.createElement("div");
   card.classList.add("movie-card");
@@ -58,7 +56,12 @@ function showMovieInfo(movie) {
   const commentForm = document.getElementById(`comment-form-${movie.id}`);
   commentForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    addComment(movie.id, movie.comments);
+    const commentInput = document.getElementById(`input-comment-${movie.id}`);
+    const commentText = commentInput.value.trim();
+    if (commentText) {
+      addComment(movie.id, commentText);
+      commentInput.value = "";
+    }
   });
 
   displayComments(movie.id, movie.comments);
@@ -70,21 +73,22 @@ function showMovieInfo(movie) {
   };
 }
 
-function addComment(movieId, movieComment) {
-  const commentInput = document.getElementById(`input-comment-${movieId}`);
-  const commentText = commentInput.value.trim();
-  if (commentText) {
-    movieComment.push(commentText);
-    displayComments(movieId, movieComment);
-    commentInput.value = "";
+function addComment(movieId, commentText) {
+  const movie = movies.find((m) => m.id === movieId);
+  if (movie) {
+    if (!movie.comments) {
+      movie.comments = [];
+    }
+    movie.comments.push(commentText);
+    displayComments(movieId, movie.comments);
   }
 }
 
-function displayComments(movieId, movieComment) {
+function displayComments(movieId, movieComments) {
   const commentList = document.getElementById(`comment-list-${movieId}`);
   commentList.innerHTML = "";
-  if (movieComment) {
-    movieComment.forEach((comment) => {
+  if (movieComments) {
+    movieComments.forEach((comment) => {
       const commentDiv = document.createElement("div");
       commentDiv.classList.add("comment");
       commentDiv.innerHTML = comment;
@@ -120,7 +124,7 @@ function displayMovies(movieList) {
         }
       });
 
-      const movie = movieList.find((m) => m.id == movieId);
+      const movie = movieList.find((m) => m.id === movieId);
       if (movie) {
         movie.rating = rating;
       }
