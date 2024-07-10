@@ -11,10 +11,42 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
     <title>Movie website</title>
   </head>
   <body>
-    <h1 class="animated-header">iMovies</h1>
+    <header class="header">
+      <div class="movie-header-info">
+        <i class="ri-movie-2-line"></i>
+        <p class="animated-header">iMovies</p>
+      </div>
+      <div class="container">
+        <form action="" class="search" id="search-bar">
+          <input
+            type="search"
+            placeholder="title"
+            class="search__input"
+            id="search-input"
+          />
+          <div class="search__button" id="search-button">
+            <i class="ri-search-2-line search__icon"></i>
+            <i class="ri-close-line search__close"></i>
+          </div>
+        </form>
+      </div>
+    </header>
+    <div class="sort-container">
+      <!-- <label for="sort-select">Sort By</label> -->
+      <select name="" id="sort-select">
+        <option value="">Sort By</option>
+        <option value="title">Title</option>
+        <option value="year">Year</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
     <div class="movie-grid" id="movie-grid"></div>
     <div id="movieModal" class="modal">
       <div class="modal-content">

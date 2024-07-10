@@ -20,6 +20,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     price: "120.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -39,6 +40,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
     price: "150.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -58,6 +60,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
     price: "140.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -77,6 +80,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/5ScPNT6fHtfYJeWBajZciPV3hEL.jpg",
     price: "200.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -96,6 +100,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/74xTEgt7R36Fpooo50r9T25onhq.jpg",
     price: "190.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -115,6 +120,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
     price: "180.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -134,6 +140,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/iUgygt3fscRoKWCV1d0C7FbM9TP.jpg",
     price: "170.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -153,6 +160,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/qAZ0pzat24kLdO3o8ejmbLxyOac.jpg",
     price: "160.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -175,6 +183,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
     price: "100.00",
+    rating: 0,
     // comments: [],
   },
   {
@@ -198,6 +207,8 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/3Gkb6jm6962ADUPaCBqzz9CTbn9.jpg",
     price: "120.00",
+    rating: 0,
+
     // comments: [],
   },
   {
@@ -220,6 +231,7 @@ const movies = [
     poster_url:
       "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
     price: "120.00",
+    rating: 0,
     // comments: [],
   },
 ];

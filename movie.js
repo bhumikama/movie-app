@@ -5,17 +5,29 @@ function createMovieCard(movie) {
   card.classList.add("movie-card");
 
   card.innerHTML = `
-    <img src="${movie.poster_url}" alt="${movie.title} Poster" class="movie-poster">
+    <img src="${movie.poster_url}" alt="${
+    movie.title
+  } Poster" class="movie-poster">
     <div class="star-rating" data-movie-id="${movie.id}">
       <div>
         <i class="fa-solid fa-circle-info info-icon" style="color: #74C0FC;"></i>
       </div>
       <div>
-        <button class="star">&#9734;</button>
-        <button class="star">&#9734;</button>
-        <button class="star">&#9734;</button>
-        <button class="star">&#9734;</button>
-        <button class="star">&#9734;</button>
+        <button class="star">${
+          movie.rating >= 1 ? "&#9733;" : "&#9734;"
+        }</button> 
+        <button class="star">${
+          movie.rating >= 2 ? "&#9733;" : "&#9734;"
+        }</button>
+        <button class="star">${
+          movie.rating >= 3 ? "&#9733;" : "&#9734;"
+        }</button>
+        <button class="star">${
+          movie.rating >= 1 ? "&#9733;" : "&#9734;"
+        }</button>
+        <button class="star">${
+          movie.rating >= 1 ? "&#9733;" : "&#9734;"
+        }</button>
       </div>
     </div>
   `;
@@ -97,12 +109,20 @@ function displayComments(movieId, movieComments) {
   }
 }
 
-function displayMovies(movieList) {
+function displayMovies(movieList, keyword) {
   const movieGrid = document.getElementById("movie-grid");
-  movieList.forEach((movie) => {
-    const movieCard = createMovieCard(movie);
-    movieGrid.appendChild(movieCard);
-  });
+  movieGrid.innerHTML = "";
+  if (movieList.length === 0) {
+    const noMoviesMessage = document.createElement("p");
+    noMoviesMessage.classList.add("filter-result");
+    noMoviesMessage.textContent = `No movies found for ${keyword}`;
+    movieGrid.appendChild(noMoviesMessage);
+  } else {
+    movieList.forEach((movie) => {
+      const movieCard = createMovieCard(movie);
+      movieGrid.appendChild(movieCard);
+    });
+  }
 
   const allStars = document.querySelectorAll(".star");
   allStars.forEach((star) => {
@@ -124,7 +144,7 @@ function displayMovies(movieList) {
         }
       });
 
-      const movie = movieList.find((m) => m.id === movieId);
+      const movie = movieList.find((m) => m.id === parseInt(movieId));
       if (movie) {
         movie.rating = rating;
       }
@@ -132,4 +152,67 @@ function displayMovies(movieList) {
   });
 }
 
-displayMovies(movies);
+function displayAllMovies() {
+  displayMovies(movies);
+}
+
+function searchMovies(keyword) {
+  const lowerCaseKeyword = keyword.toLowerCase();
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(lowerCaseKeyword)
+  );
+
+  displayMovies(filteredMovies, keyword);
+}
+
+function sortMovies(movieList, sortBy) {
+  const sortedMovies = [...movieList]; //creates a shallow copy since sorting overwrites the original array
+  sortedMovies.sort((a, b) => {
+    if (sortBy === "title") {
+      return a.title.localeCompare(b.title);
+    } else if (sortBy === "year") {
+      return a.movie_year - b.movie_year;
+    } else if (sortBy === "rating") {
+      return (b.rating || 0) - (a.rating || 0); // null or undefined values are considered as 0
+    }
+    return 0;
+  });
+  displayMovies(sortedMovies);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  displayAllMovies();
+
+  const searchBar = document.getElementById("search-bar");
+  const searchButton = document.getElementById("search-button");
+  searchButton.addEventListener("click", () => {
+    searchBar.classList.toggle("show-search");
+  });
+
+  const closeIcon = document.querySelector(".search__close");
+  closeIcon.addEventListener("click", () => {
+    const searchInput = document.getElementById("search-input");
+    searchInput.value = "";
+    displayAllMovies();
+  });
+
+  const searchInput = document.getElementById("search-input");
+  searchInput.addEventListener("input", (event) => {
+    const keyword = event.target.value;
+    if (keyword) {
+      searchMovies(keyword);
+    }
+  });
+
+  searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the form from being submitted
+    }
+  });
+
+  const selectField = document.getElementById("sort-select");
+  selectField.addEventListener("change", (event) => {
+    const sortType = event.target.value;
+    sortMovies(movies, sortType);
+  });
+});
