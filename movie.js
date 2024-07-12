@@ -23,10 +23,10 @@ function createMovieCard(movie) {
           movie.rating >= 3 ? "&#9733;" : "&#9734;"
         }</button>
         <button class="star">${
-          movie.rating >= 1 ? "&#9733;" : "&#9734;"
+          movie.rating >= 4 ? "&#9733;" : "&#9734;"
         }</button>
         <button class="star">${
-          movie.rating >= 1 ? "&#9733;" : "&#9734;"
+          movie.rating >= 5 ? "&#9733;" : "&#9734;"
         }</button>
       </div>
     </div>
@@ -163,6 +163,12 @@ function searchMovies(keyword) {
   );
 
   displayMovies(filteredMovies, keyword);
+
+  const selectField = document.getElementById("sort-select");
+  selectField.addEventListener("change", (event) => {
+    const sortBy = event.target.value;
+    sortMovies(filteredMovies, sortBy);
+  });
 }
 
 function sortMovies(movieList, sortBy) {
@@ -198,9 +204,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (event) => {
-    const keyword = event.target.value;
+    const keyword = event.target.value.trim();
     if (keyword) {
       searchMovies(keyword);
+    } else {
+      displayAllMovies();
     }
   });
 
