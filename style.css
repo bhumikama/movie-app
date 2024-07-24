@@ -30,6 +30,8 @@ body {
   background: var(--bg-color);
   color: var(--text-color);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -43,7 +45,7 @@ body {
 }
 
 .animated-header {
-  font-size: 3rem;
+  font-size: 3.2rem;
   color: var(--text-color);
   letter-spacing: 0.3rem;
 }
@@ -181,6 +183,9 @@ body {
   font-size: 1rem;
 }
 
+#main {
+  flex-grow: 1;
+}
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -347,6 +352,63 @@ body {
   padding: 3px;
 }
 
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-color: var(--snd-bg-color);
+  align-items: center;
+  padding: 2rem 3%;
+  font-size: 1.2rem;
+}
+
+#timer-display {
+  padding-top: 0.6rem;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.display-timer input {
+  border: none;
+  outline: none;
+  height: 100%;
+  font-weight: 300;
+  font-family: "Poppins";
+  border-bottom: 1px solid var(--main-color);
+  background-color: var(--snd-bg-color);
+  color: var(--text-color);
+  margin-right: 0.6rem;
+}
+
+.clock span {
+  display: inline-block;
+  width: 30px;
+  position: relative;
+  font-size: 1.2rem;
+}
+
+.clock span::after {
+  position: absolute;
+  bottom: -13px;
+  left: 4%;
+  font-size: 0.8rem;
+}
+
+#hours::after {
+  content: "HOURS";
+}
+#minutes::after {
+  content: "MINS";
+}
+#seconds::after {
+  content: "SECS";
+}
+
 @media (max-width: 1200px) {
   html {
     font-size: 55%;
@@ -356,5 +418,8 @@ body {
 @media (max-width: 610px) {
   .show-search {
     width: 100%;
+  }
+  .footer {
+    padding: 2rem 1%;
   }
 }

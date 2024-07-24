@@ -1,4 +1,7 @@
 import { movies } from "./storemovies.js";
+const startTimerButton = document.getElementById("start-timer");
+const displayCountDown = document.getElementById("timer-display");
+let countdown;
 
 function createMovieCard(movie) {
   const card = document.createElement("div");
@@ -186,6 +189,43 @@ function sortMovies(movieList, sortBy) {
   displayMovies(sortedMovies);
 }
 
+function startCountDown(startingMinutes) {
+  let time = startingMinutes * 60;
+
+  countdown = setInterval(() => {
+    let minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    displayCountDown.innerHTML = ` Time left to choose a movie : ${minutes}m : ${seconds}s`;
+    time--;
+    if (time < 0) {
+      clearInterval(countdown);
+      alert("Time's up. Choose a movie FAST !!");
+    }
+  }, 1000);
+}
+
+function calculateTimeSpent() {
+  let hrs = document.getElementById("hours");
+  let mins = document.getElementById("minutes");
+  let secs = document.getElementById("seconds");
+
+  let elapsedTime = 0;
+
+  setInterval(() => {
+    elapsedTime++;
+    let hours = Math.floor(elapsedTime / 36000);
+    let minutes = Math.floor((elapsedTime % 36000) / 60);
+    let seconds = elapsedTime % 60;
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    hrs.innerHTML = `${hours}`;
+    mins.innerHTML = `${minutes}`;
+    secs.innerHTML = `${seconds}`;
+  }, 1000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   displayAllMovies();
 
@@ -223,4 +263,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const sortType = event.target.value;
     sortMovies(movies, sortType);
   });
+
+  startTimerButton.addEventListener("click", function (event) {
+    const timerInput = document.getElementById("input-minutes");
+    const inputTimeInMinutes = parseInt(timerInput.value);
+
+    if (isNaN(inputTimeInMinutes) || inputTimeInMinutes <= 0) {
+      alert("Please input a valid number ...");
+      return;
+    }
+    displayCountDown.innerHTML = "";
+    clearInterval(countdown);
+    startCountDown(inputTimeInMinutes);
+    timerInput.value = "";
+  });
+
+  calculateTimeSpent();
 });

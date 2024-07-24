@@ -38,22 +38,48 @@
         </form>
       </div>
     </header>
-    <div class="sort-container">
-      <!-- <label for="sort-select">Sort By</label> -->
-      <select name="" id="sort-select">
-        <option value="">Sort By</option>
-        <option value="title">Title</option>
-        <option value="year">Year</option>
-        <option value="rating">Rating</option>
-      </select>
-    </div>
-    <div class="movie-grid" id="movie-grid"></div>
-    <div id="movieModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <div id="modal-movie-info"></div>
+    <main class="main">
+      <div class="sort-container">
+        <!-- <label for="sort-select">Sort By</label> -->
+        <select name="" id="sort-select">
+          <option value="">Sort By</option>
+          <option value="title">Title</option>
+          <option value="year">Year</option>
+          <option value="rating">Rating</option>
+        </select>
       </div>
-    </div>
+      <div class="movie-grid" id="movie-grid"></div>
+      <div id="movieModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div id="modal-movie-info"></div>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="display-timer">
+        <!-- <p id="statusOfText">Set Timer !</p> -->
+        <form action="" id="timer-form">
+          <input
+            type="number"
+            placeholder="Enter in minutes . . ."
+            id="input-minutes"
+          />
+          <button class="btn" id="start-timer" type="button">
+            Start Timer
+          </button>
+        </form>
+        <p id="timer-display"></p>
+      </div>
+      <div class="clock">
+        <span id="hours">00</span>
+        <span>:</span>
+        <span id="minutes">00</span>
+        <span>:</span>
+        <span id="seconds">00</span>
+      </div>
+    </footer>
+
     <script type="module" src="storemovies.js"></script>
     <script type="module" src="movie.js"></script>
   </body>
