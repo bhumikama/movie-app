@@ -210,10 +210,12 @@ function calculateTimeSpent() {
   let mins = document.getElementById("minutes");
   let secs = document.getElementById("seconds");
 
-  let elapsedTime = 0;
+  let startingTime = new Date();
 
   setInterval(() => {
-    elapsedTime++;
+    const timeNow = new Date();
+
+    const elapsedTime = Math.floor((timeNow - startingTime) / 1000); //difference is in ms
     let hours = Math.floor(elapsedTime / 36000);
     let minutes = Math.floor((elapsedTime % 36000) / 60);
     let seconds = elapsedTime % 60;
