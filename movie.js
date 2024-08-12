@@ -1,6 +1,8 @@
-import { movies } from "./storemovies.js";
 const startTimerButton = document.getElementById("start-timer");
 const displayCountDown = document.getElementById("timer-display");
+let searchIsActive = false;
+let filteredMovies = [];
+let movies = [];
 let countdown;
 
 function createMovieCard(movie) {
@@ -112,6 +114,30 @@ function displayComments(movieId, movieComments) {
   }
 }
 
+function searchMovies(keyword) {
+  searchIsActive = true;
+  const lowerCaseKeyword = keyword.toLowerCase();
+  filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(lowerCaseKeyword)
+  );
+
+  displayMovies(filteredMovies, keyword);
+}
+
+function sortMovies(movieList, sortBy) {
+  const sortedMovies = [...movieList]; //creates a shallow copy since sorting overwrites the original array
+  sortedMovies.sort((a, b) => {
+    if (sortBy === "title") {
+      return a.title.localeCompare(b.title);
+    } else if (sortBy === "year") {
+      return a.movie_year - b.movie_year;
+    } else if (sortBy === "rating") {
+      return (b.rating || 0) - (a.rating || 0); // null or undefined values are considered as 0
+    }
+    return 0;
+  });
+  displayMovies(sortedMovies);
+}
 function displayMovies(movieList, keyword) {
   const movieGrid = document.getElementById("movie-grid");
   movieGrid.innerHTML = "";
@@ -155,40 +181,6 @@ function displayMovies(movieList, keyword) {
   });
 }
 
-function displayAllMovies() {
-  displayMovies(movies);
-}
-
-function searchMovies(keyword) {
-  const lowerCaseKeyword = keyword.toLowerCase();
-  const filteredMovies = movies.filter((movie) =>
-    movie.title.toLowerCase().includes(lowerCaseKeyword)
-  );
-
-  displayMovies(filteredMovies, keyword);
-
-  const selectField = document.getElementById("sort-select");
-  selectField.addEventListener("change", (event) => {
-    const sortBy = event.target.value;
-    sortMovies(filteredMovies, sortBy);
-  });
-}
-
-function sortMovies(movieList, sortBy) {
-  const sortedMovies = [...movieList]; //creates a shallow copy since sorting overwrites the original array
-  sortedMovies.sort((a, b) => {
-    if (sortBy === "title") {
-      return a.title.localeCompare(b.title);
-    } else if (sortBy === "year") {
-      return a.movie_year - b.movie_year;
-    } else if (sortBy === "rating") {
-      return (b.rating || 0) - (a.rating || 0); // null or undefined values are considered as 0
-    }
-    return 0;
-  });
-  displayMovies(sortedMovies);
-}
-
 function startCountDown(startingMinutes) {
   let time = startingMinutes * 60;
 
@@ -229,7 +221,20 @@ function calculateTimeSpent() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  displayAllMovies();
+  fetch(
+    "https://raw.githubusercontent.com/bhumikama/bhumikama.github.io/main/movies.json"
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Could not fetch resource");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      movies = data;
+      displayMovies(movies);
+    })
+    .catch((error) => console.error(error));
 
   const searchBar = document.getElementById("search-bar");
   const searchButton = document.getElementById("search-button");
@@ -241,7 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
   closeIcon.addEventListener("click", () => {
     const searchInput = document.getElementById("search-input");
     searchInput.value = "";
-    displayAllMovies();
+    searchIsActive = false;
+    displayMovies(movies);
   });
 
   const searchInput = document.getElementById("search-input");
@@ -250,7 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (keyword) {
       searchMovies(keyword);
     } else {
-      displayAllMovies();
+      searchIsActive = false;
+      displayMovies(movies);
     }
   });
 
@@ -263,7 +270,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectField = document.getElementById("sort-select");
   selectField.addEventListener("change", (event) => {
     const sortType = event.target.value;
-    sortMovies(movies, sortType);
+    if (searchIsActive) {
+      sortMovies(filteredMovies, sortType); // when search is active sort based on filtered movies
+    } else {
+      sortMovies(movies, sortType); // otherwise sort considering the whole list of movies
+    }
   });
 
   startTimerButton.addEventListener("click", function (event) {
