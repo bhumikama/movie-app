@@ -1,28 +1,126 @@
-const startTimerButton = document.getElementById("start-timer");
-const displayCountDown = document.getElementById("timer-display");
+/*
+ * ------------------------------
+ * GLOBAL VARIABLES
+ * ------------------------------
+ */
 let searchIsActive = false;
 let filteredMovies = [];
 let movies = [];
 let searchKeyword = "";
 let selectedGenre = "All";
 let countdown;
+let likedMovies = JSON.parse(localStorage.getItem("likedMovies")) || [];
+const startTimerButton = document.getElementById("start-timer");
+const displayCountDown = document.getElementById("timer-display");
+const favoriteButton = document.getElementById("favoriteButton");
 
+/*
+ * ------------------------------
+ * MOVIE SLIDERS FOR HOME PAGE
+ * ------------------------------
+ */
+
+const navButtons = document.querySelectorAll(".nav-btn");
+const videoSliders = document.querySelectorAll(".video-slider");
+const contentDivS = document.querySelectorAll(".content");
+
+let sliderNav = function (index) {
+  navButtons.forEach((btn) => {
+    btn.classList.remove("active");
+  });
+  videoSliders.forEach((btn) => {
+    btn.classList.remove("active");
+  });
+  contentDivS.forEach((btn) => {
+    btn.classList.remove("active");
+  });
+  navButtons[index].classList.add("active");
+  videoSliders[index].classList.add("active");
+  contentDivS[index].classList.add("active");
+};
+
+navButtons.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    sliderNav(index);
+  });
+});
+
+/*
+ * ------------------------------
+ * MENU ICON FOR SMALLER SCREENS
+ * ------------------------------
+ */
+
+const menuIcon = document.querySelector(".menu-btn");
+const navLinks = document.querySelector(".navList");
+menuIcon.addEventListener("click", () => {
+  menuIcon.classList.toggle("active");
+  navLinks.classList.toggle("active");
+});
+
+/*
+ * ------------------------------
+ * DISPLAY MOVIE GRID
+ * ------------------------------
+ */
+function displayMovies(movieList) {
+  const movieGrid = document.getElementById("movie-grid");
+  movieGrid.innerHTML = "";
+  if (movieList.length === 0) {
+    const noMoviesMessage = document.createElement("p");
+    noMoviesMessage.classList.add("filter-result");
+    noMoviesMessage.textContent = `No movies found for "${searchKeyword}"`;
+    movieGrid.appendChild(noMoviesMessage);
+  } else {
+    movieList.forEach((movie) => {
+      const movieCard = createMovieCard(movie);
+      movieGrid.appendChild(movieCard);
+    });
+  }
+}
+
+/*
+ * ----------------------
+ * MOVIE CARD
+ * ----------------------
+ */
 function createMovieCard(movie) {
   const card = document.createElement("div");
   card.classList.add("movie-card");
+  card.setAttribute("data-movie-id", movie.id);
+  const isLiked = likedMovies.includes(movie.id);
 
   card.innerHTML = `
-    <img src="${movie.poster_url}" alt="${movie.title} Poster" class="movie-poster">
+    <img src="${movie.poster_url}" alt="${
+    movie.title
+  } Poster" class="movie-poster">
     <h2 class="card-title">${movie.title}</h2>
+    <div class="heart-icon ${isLiked ? "liked" : ""}">
+      <i class="fa${isLiked ? "s" : "r"} fa-heart"></i>
+    </div>
   `;
-
   card.addEventListener("click", function (event) {
+    if (event.target.closest(".heart-icon")) {
+      return;
+    }
     showMovieInfo(movie);
+  });
+
+  //handles click event for heartIcon
+  const heartIcon = card.querySelector(".heart-icon");
+  heartIcon.addEventListener("click", function (event) {
+    event.stopPropagation(); // Prevent triggering the card click event
+    toggleLike(movie.id, heartIcon);
   });
 
   return card;
 }
 
+/*
+ * -----------------
+ * MODAL POP UP
+ * -----------------
+ */
 function showMovieInfo(movie) {
   const modal = document.getElementById("movieModal");
   const modalContent = document.getElementById("modal-movie-info");
@@ -32,7 +130,7 @@ function showMovieInfo(movie) {
    <img src="${movie.poster_url}" alt="${movie.title} Poster" class="poster">
     <div>
      <h2 class="movie-title">${movie.title}</h2>
-     <div class="rating"> 
+     <div class="rating">
        <img src="star-solid.svg">
        <h4>${movie.imdb_rating}</h4>
      </div>
@@ -41,26 +139,26 @@ function showMovieInfo(movie) {
         <span>${movie.movie_year} </span>
         <span>${movie.duration}</span>
      </div>
-     <div class="genre"> 
+     <div class="genre">
        <div>${movie.genre.split(",").join("</div><div>")}</div>
      </div>
-     <div class="trailer"> 
+     <div class="trailer">
        <a href="${movie.trailer_url}"
        target="_blank"><i class="fa-solid fa-circle-play" style="color: #FFD43B;"></i> watch the trailer </a>
      </div>
-    </div> 
+    </div>
   </div>
 
   <h3 class="headerThree">Overview</h3>
-  <p class="movie-description">${movie.description}</p>   
+  <p class="movie-description">${movie.description}</p>
   <h3 class="headerThree">Cast</h3>
-  <p class="movie-actors">${movie.actors.join(", ")}</p>  
+  <p class="movie-actors">${movie.actors.join(", ")}</p>
   <div class="star-rating" data-movie-id="${movie.id}">
       <span class="rating_span">Your Rating : </span>
       <div>
         <button class="star">${
           movie.rating >= 1 ? "&#9733;" : "&#9734;"
-        }</button> 
+        }</button>
         <button class="star">${
           movie.rating >= 2 ? "&#9733;" : "&#9734;"
         }</button>
@@ -89,11 +187,13 @@ function showMovieInfo(movie) {
 
   modal.style.display = "block";
 
+  //close the pop up
   const closeModal = document.querySelector(".close");
   closeModal.onclick = function () {
     modal.style.display = "none";
   };
 
+  //handles click event for star rating
   const allStars = document.querySelectorAll(".star");
   allStars.forEach((star, index) => {
     star.addEventListener("click", function (event) {
@@ -112,6 +212,7 @@ function showMovieInfo(movie) {
     });
   });
 
+  //handling submission of the comment
   const commentForm = document.getElementById(`comment-form-${movie.id}`);
   commentForm.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -132,6 +233,11 @@ function showMovieInfo(movie) {
   };
 }
 
+/*
+ * ------------------------
+ * ADD COMMENTS FOR MOVIE
+ * ------------------------
+ */
 function addComment(movieId, commentText) {
   const movie = movies.find((m) => m.id === movieId);
   if (movie) {
@@ -142,7 +248,11 @@ function addComment(movieId, commentText) {
     displayComments(movieId, movie.comments);
   }
 }
-
+/*
+ * -----------------------
+ * DISPLAY MOVIE COMMENTS
+ * -----------------------
+ */
 function displayComments(movieId, movieComments) {
   const commentList = document.getElementById(`comment-list-${movieId}`);
   commentList.innerHTML = "";
@@ -156,21 +266,48 @@ function displayComments(movieId, movieComments) {
   }
 }
 
+/*
+ * ------------------------------------------
+ * TOGGLE CLASS FOR HANDLING FAVORITE MOVIES
+ * ------------------------------------------
+ */
+function toggleLike(movieId, heartIcon) {
+  if (likedMovies.includes(movieId)) {
+    likedMovies = likedMovies.filter((id) => id !== movieId);
+  } else {
+    likedMovies.push(movieId);
+  }
+
+  localStorage.setItem("likedMovies", JSON.stringify(likedMovies));
+  heartIcon.classList.toggle("liked");
+  const iconElement = heartIcon.querySelector("i");
+  if (heartIcon.classList.contains("liked")) {
+    iconElement.classList.remove("far"); // Remove regular heart
+    iconElement.classList.add("fas"); // Add solid heart
+  } else {
+    iconElement.classList.remove("fas"); // Remove solid heart
+    iconElement.classList.add("far"); // Add regular heart
+  }
+}
+
+/*
+ * -----------------------------
+ * SEARCH MOVIES THROUGH KEYWORD
+ * -----------------------------
+ */
 function searchMovies(keyword) {
   searchKeyword = keyword.toLowerCase();
+  searchIsActive = true;
   filterMovies();
 }
 
+/*
+ * -----------------------------------------------
+ * FILTER MOVIES BASED ON GENRE AND SEARCH KEYWORD
+ * -----------------------------------------------
+ */
 function filterMovies() {
-  searchIsActive = true;
   let moviesToDisplay = [...movies];
-
-  // Apply keyword filter
-  if (searchKeyword) {
-    moviesToDisplay = moviesToDisplay.filter((movie) =>
-      movie.title.toLowerCase().includes(searchKeyword)
-    );
-  }
 
   // Apply genre filter
   if (selectedGenre !== "All") {
@@ -178,11 +315,21 @@ function filterMovies() {
       movie.genre.split(", ").includes(selectedGenre)
     );
   }
+  // Apply keyword filter
+  if (searchKeyword) {
+    moviesToDisplay = moviesToDisplay.filter((movie) =>
+      movie.title.toLowerCase().includes(searchKeyword)
+    );
+  }
   filteredMovies = moviesToDisplay;
-
   displayMovies(moviesToDisplay);
 }
 
+/*
+ * -----------------------------
+ *        SORT MOVIES
+ * -----------------------------
+ */
 function sortMovies(movieList, sortBy) {
   const sortedMovies = [...movieList]; //creates a shallow copy since sorting overwrites the original array
   sortedMovies.sort((a, b) => {
@@ -197,36 +344,16 @@ function sortMovies(movieList, sortBy) {
   });
   displayMovies(sortedMovies);
 }
-function displayMovies(movieList, keyword) {
-  const movieGrid = document.getElementById("movie-grid");
-  movieGrid.innerHTML = "";
-  if (movieList.length === 0) {
-    const noMoviesMessage = document.createElement("p");
-    noMoviesMessage.classList.add("filter-result");
-    noMoviesMessage.textContent = `No movies found for ${keyword}`;
-    movieGrid.appendChild(noMoviesMessage);
-  } else {
-    movieList.forEach((movie) => {
-      const movieCard = createMovieCard(movie);
-      movieGrid.appendChild(movieCard);
-    });
-  }
-}
 
-async function fetchData() {
-  try {
-    const resp = await fetch(
-      "https://raw.githubusercontent.com/bhumikama/bhumikama.github.io/main/movies.json"
-    );
-    const data = await resp.json();
-    movies = data;
-    displayMovies(movies);
-    generateGenreTags();
-  } catch (error) {
-    console.error(error);
-  }
-}
-
+/*
+ * ---------------------------------------------------------------------------------
+ * FOR HANDLING MOVIE GENRES
+ * generates <a> tags for each of the genre in the genres array
+ * handles toggle of genres so that only one genre is selected at a time
+ * also handles the case where "all genres" is selected after selecting any other genre
+ * calls filterMovies() function to apply filter for the selected genres
+ * ----------------------------------------------------------------------------------
+ */
 function generateGenreTags() {
   const genres = ["Comedy", "Family", "Adventure", "Drama", "Action"];
 
@@ -267,6 +394,11 @@ function generateGenreTags() {
   });
 }
 
+/*
+ * ------------------------------
+ * COUNTDOWN FUNCTION
+ * ------------------------------
+ */
 function startCountDown(startingMinutes) {
   let time = startingMinutes * 60;
 
@@ -283,13 +415,19 @@ function startCountDown(startingMinutes) {
   }, 1000);
 }
 
+/*
+ * --------------------------------------
+ * TIMER FUNCTION
+ * uses asynchronous function setInterval()
+ * to update the timings.
+ * --------------------------------------
+ */
 function calculateTimeSpent() {
   let hrs = document.getElementById("hours");
   let mins = document.getElementById("minutes");
   let secs = document.getElementById("seconds");
 
   let startingTime = new Date();
-
   setInterval(() => {
     const timeNow = new Date();
 
@@ -306,6 +444,38 @@ function calculateTimeSpent() {
   }, 1000);
 }
 
+/*
+ * --------------------------------------------
+ *  FETCH MOVIE DATA FROM API
+ *  fetches movie data from API using async/await
+ *  errors are handled through try/catch block
+ * --------------------------------------------
+ */
+async function fetchData() {
+  try {
+    const resp = await fetch(
+      "https://raw.githubusercontent.com/bhumikama/bhumikama.github.io/main/movies.json"
+    );
+    const data = await resp.json();
+    movies = data;
+    localStorage.setItem("movies", JSON.stringify(movies));
+    displayMovies(movies);
+    generateGenreTags();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+/**
+ * Event Listener for DOMContentLoaded.
+ *
+ * handles click events for search icon
+ * toggles class for search(show/hide input element)
+ * handles click events for sort
+ * handles click event for different navigation in header
+ * handles click event for starting the timer
+ */
+
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchData();
 
@@ -315,22 +485,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     searchBar.classList.toggle("show-search");
   });
 
+  //when the search icon is closed
   const closeIcon = document.querySelector(".search__close");
   closeIcon.addEventListener("click", () => {
     const searchInput = document.getElementById("search-input");
     searchInput.value = "";
+    searchKeyword = "";
     searchIsActive = false;
-    displayMovies(movies);
+    filterMovies();
   });
 
+  //searching movies through input field
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (event) => {
     const keyword = event.target.value.trim();
     if (keyword) {
       searchMovies(keyword);
     } else {
+      searchKeyword = "";
       searchIsActive = false;
-      displayMovies(movies);
+      filterMovies();
     }
   });
 
@@ -343,13 +517,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const selectField = document.getElementById("sort-select");
   selectField.addEventListener("change", (event) => {
     const sortType = event.target.value;
-    if (searchIsActive) {
+    if (searchIsActive || filteredMovies.length !== 0) {
       sortMovies(filteredMovies, sortType); // when search is active sort based on filtered movies
     } else {
       sortMovies(movies, sortType); // otherwise sort considering the whole list of movies
     }
   });
 
+  //when home nav is clicked
+  document.getElementById("homeButton").addEventListener("click", () => {
+    displayMovies(movies);
+    selectedGenre = "All";
+  });
+
+  //when favorites nav is clicked
+  document.getElementById("favoriteButton").addEventListener("click", () => {
+    window.location.href = "favorites.html";
+  });
+
+  //for starting a timer
   startTimerButton.addEventListener("click", function (event) {
     const timerInput = document.getElementById("input-minutes");
     const inputTimeInMinutes = parseInt(timerInput.value);
