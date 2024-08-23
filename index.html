@@ -12,58 +12,189 @@
       referrerpolicy="no-referrer"
     />
     <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
       rel="stylesheet"
     />
-    <title>Movie website</title>
+    <!-- <link rel="shortcut icon" href="./logo.png" type="image/x-icon" /> -->
+    <title>MOVIES</title>
   </head>
   <body>
-    <header class="header">
-      <div class="movie-header-info">
-        <i class="ri-movie-2-line"></i>
-        <p class="animated-header">iMovies</p>
+    <header>
+      <iframe
+        class="video-slider active"
+        src="https://www.youtube.com/embed/o17MF9vnabg?autoplay=1&mute=1&loop=1&playlist=o17MF9vnabg"
+        allow="autoplay; fullscreen"
+      ></iframe>
+      <iframe
+        class="video-slider"
+        src="https://www.youtube.com/embed/TbiPcMCz0Ek?autoplay=1&mute=1&loop=1&playlist=TbiPcMCz0Ek"
+        allow="autoplay; fullscreen"
+      ></iframe>
+      <iframe
+        class="video-slider"
+        src="https://www.youtube.com/embed/O_A8HdCDaWM?autoplay=1&mute=1&loop=1&playlist=O_A8HdCDaWM"
+        allow="autoplay; fullscreen"
+      ></iframe>
+      <!--NAVIGATION-->
+      <nav>
+        <div class="logo_ul">
+          <img src="./logo.png" alt="" />
+          <ul class="navList">
+            <li><a href="" id="homeButton">Home</a></li>
+            <li><a href="#main">Movies</a></li>
+            <li><a href="favorites.html" id="favoriteButton">Favorites</a></li>
+            <li><a href="#category">Categories</a></li>
+          </ul>
+        </div>
+        <div class="menu-btn"></div>
+      </nav>
+      <!--MOVIE SLIDES-->
+      <div class="content active">
+        <h1 id="home-title">
+          Mufasa: <br />
+          The Lion King
+        </h1>
+        <p>
+          Simba, having become king of the Pride Lands, is determined for his
+          cub to follow in his paw prints while the origins of his late father
+          Mufasa are explored.
+        </p>
+        <div class="details">
+          <h5 id="gen">Adventure | Family | Drama</h5>
+          <h4>December, 2024</h4>
+        </div>
       </div>
-      <div class="container">
-        <form action="" class="search" id="search-bar">
-          <input
-            type="search"
-            placeholder="title"
-            class="search__input"
-            id="search-input"
-          />
-          <div class="search__button" id="search-button">
-            <i class="ri-search-2-line search__icon"></i>
-            <i class="ri-close-line search__close"></i>
-          </div>
-        </form>
+      <div class="content">
+        <h1 id="home-title">Disney's <br />Snow White</h1>
+        <p>
+          A live-action musical reimagining of the classic 1937 film. The
+          magical music adventure journeys back to the timeless story with
+          beloved characters Bashful, Doc, Dopey, Grumpy, Happy, Sleepy, and
+          Sneezy.
+        </p>
+        <div class="details">
+          <h5 id="gen">Fantasy | Family</h5>
+          <h4>March, 2025</h4>
+        </div>
+      </div>
+      <div class="content">
+        <h1 id="home-title">
+          Captain America:<br />
+          Brave New World
+        </h1>
+        <p>
+          After meeting with newly elected U.S. President Thaddeus Ross, Sam
+          finds himself in the middle of an international incident. He must
+          discover the reason behind a nefarious global plot before the true
+          mastermind has the entire world seeing red.
+        </p>
+        <div class="details">
+          <h5 id="gen">Action | Science Fiction</h5>
+          <h4>February, 2025</h4>
+        </div>
+      </div>
+      <!--SLIDER NAVIGATION-->
+      <div class="slider-navigation">
+        <div class="nav-btn active"></div>
+        <div class="nav-btn"></div>
+        <div class="nav-btn"></div>
       </div>
     </header>
-    <main class="main">
-      <div class="sort-container">
-        <div class="genre-dropdown">
-          <button class="genre-dropdown-btn">
-            Genre <i class="fa-solid fa-caret-down"></i>
-          </button>
-          <div class="genre-dropdown-content" id="genre-tags"></div>
-        </div>
-        <div>
-          <select name="" id="sort-select">
-            <option value="">Sort By</option>
-            <option value="title">Title</option>
-            <option value="year">Year</option>
-            <option value="rating">Rating</option>
-          </select>
+    <main id="main">
+      <div class="search_sort">
+        <p class="heading">Movies</p>
+        <div class="sort-container">
+          <div class="container">
+            <form action="" class="search" id="search-bar">
+              <input
+                type="text"
+                placeholder="title"
+                class="search__input"
+                id="search-input"
+              />
+              <div class="search__button" id="search-button">
+                <i class="ri-search-2-line search__icon"></i>
+                <i class="ri-close-line search__close"></i>
+              </div>
+            </form>
+          </div>
+          <div class="genre-dropdown">
+            <button class="genre-dropdown-btn">
+              Genre <i class="fa-solid fa-caret-down"></i>
+            </button>
+            <div class="genre-dropdown-content" id="genre-tags"></div>
+          </div>
+          <div>
+            <select name="" id="sort-select">
+              <option value="">Sort By</option>
+              <option value="title">Title</option>
+              <option value="year">Year</option>
+              <option value="rating">Rating</option>
+            </select>
+          </div>
         </div>
       </div>
-
+      <!--MOVIE GRID-->
       <div class="movie-grid" id="movie-grid"></div>
+      <!--MOVIE MODAL-->
       <div id="movieModal" class="modal">
         <div class="modal-content">
           <span class="close">&times;</span>
           <div id="modal-movie-info"></div>
         </div>
       </div>
+      <!--CATEGORIES-->
+      <section class="category" id="category">
+        <h2 class="section-heading">Category</h2>
+        <div class="category-grid">
+          <div class="category-card">
+            <img src="./adventure.jpg" alt="" class="card-image" />
+            <div class="name">Adventure</div>
+            <div class="total">13</div>
+          </div>
+          <div class="category-card">
+            <img src="./spider-man-no-way-home.jpg" alt="" class="card-image" />
+            <div class="name">Action</div>
+            <div class="total">12</div>
+          </div>
+          <div class="category-card">
+            <img src="./animated.jpg" alt="" class="card-image" />
+            <div class="name">Animated</div>
+            <div class="total">3</div>
+          </div>
+          <div class="category-card">
+            <img src="./sci-fi.jpg" alt="" class="card-image" />
+            <div class="name">Sci-Fi</div>
+            <div class="total">8</div>
+          </div>
+          <div class="category-card">
+            <img src="./comedy.jpg" alt="" class="card-image" />
+            <div class="name">Comedy</div>
+            <div class="total">4</div>
+          </div>
+          <div class="category-card">
+            <img src="./funny.jpeg" alt="" class="card-image" />
+            <div class="name">Drama</div>
+            <div class="total">15</div>
+          </div>
+          <div class="category-card">
+            <img src="./John-Wick-3.jpg" alt="" class="card-image" />
+            <div class="name">Crime</div>
+            <div class="total">8</div>
+          </div>
+          <div class="category-card">
+            <img src="./thriller.webp" alt="" class="card-image" />
+            <div class="name">Thriller</div>
+            <div class="total">4</div>
+          </div>
+        </div>
+      </section>
     </main>
+    <!--FOOTER-->
     <footer class="footer">
       <div class="display-timer">
         <form action="" id="timer-form">
