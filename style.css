@@ -193,15 +193,6 @@ body {
   font-weight: 600;
   transition: 0.5s ease;
   cursor: pointer;
-
-  /* background-color: white;
-  color: white;
-  background: transparent;
-  padding: 10px;
-  font-size: 14px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px; */
 }
 
 .genre-dropdown-content {

@@ -306,8 +306,8 @@ function calculateTimeSpent() {
   }, 1000);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetchData();
+document.addEventListener("DOMContentLoaded", async () => {
+  await fetchData();
 
   const searchBar = document.getElementById("search-bar");
   const searchButton = document.getElementById("search-button");
