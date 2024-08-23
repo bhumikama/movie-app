@@ -3,6 +3,8 @@ const displayCountDown = document.getElementById("timer-display");
 let searchIsActive = false;
 let filteredMovies = [];
 let movies = [];
+let searchKeyword = "";
+let selectedGenre = "All";
 let countdown;
 
 function createMovieCard(movie) {
@@ -10,13 +12,51 @@ function createMovieCard(movie) {
   card.classList.add("movie-card");
 
   card.innerHTML = `
-    <img src="${movie.poster_url}" alt="${
-    movie.title
-  } Poster" class="movie-poster">
-    <div class="star-rating" data-movie-id="${movie.id}">
-      <div>
-        <i class="fa-solid fa-circle-info info-icon" style="color: #74C0FC;"></i>
-      </div>
+    <img src="${movie.poster_url}" alt="${movie.title} Poster" class="movie-poster">
+    <h2 class="card-title">${movie.title}</h2>
+  `;
+
+  card.addEventListener("click", function (event) {
+    showMovieInfo(movie);
+  });
+
+  return card;
+}
+
+function showMovieInfo(movie) {
+  const modal = document.getElementById("movieModal");
+  const modalContent = document.getElementById("modal-movie-info");
+
+  modalContent.innerHTML = `
+  <div class="info">
+   <img src="${movie.poster_url}" alt="${movie.title} Poster" class="poster">
+    <div>
+     <h2 class="movie-title">${movie.title}</h2>
+     <div class="rating"> 
+       <img src="star-solid.svg">
+       <h4>${movie.imdb_rating}</h4>
+     </div>
+     <div class="details">
+        <span>${movie.age_rating} </span>
+        <span>${movie.movie_year} </span>
+        <span>${movie.duration}</span>
+     </div>
+     <div class="genre"> 
+       <div>${movie.genre.split(",").join("</div><div>")}</div>
+     </div>
+     <div class="trailer"> 
+       <a href="${movie.trailer_url}"
+       target="_blank"><i class="fa-solid fa-circle-play" style="color: #FFD43B;"></i> watch the trailer </a>
+     </div>
+    </div> 
+  </div>
+
+  <h3 class="headerThree">Overview</h3>
+  <p class="movie-description">${movie.description}</p>   
+  <h3 class="headerThree">Cast</h3>
+  <p class="movie-actors">${movie.actors.join(", ")}</p>  
+  <div class="star-rating" data-movie-id="${movie.id}">
+      <span class="rating_span">Your Rating : </span>
       <div>
         <button class="star">${
           movie.rating >= 1 ? "&#9733;" : "&#9734;"
@@ -35,32 +75,16 @@ function createMovieCard(movie) {
         }</button>
       </div>
     </div>
-  `;
-
-  const infoIcon = card.querySelector(".info-icon");
-  infoIcon.addEventListener("click", function (event) {
-    event.stopPropagation(); // Prevent the card click event from firing
-    showMovieInfo(movie);
-  });
-
-  return card;
-}
-
-function showMovieInfo(movie) {
-  const modal = document.getElementById("movieModal");
-  const modalContent = document.getElementById("modal-movie-info");
-
-  modalContent.innerHTML = `
-    <h2 class="movie-title">${movie.title}</h2>
-    <p class="movie-description">${movie.description}</p>
-    <p class="movie-details"><strong>Year:</strong> ${movie.movie_year}</p>
-    <p class="movie-price">$${movie.price}</p>
-    <form id="comment-form-${movie.id}">
-    <input type="text" placeholder="comment here ..." class="input-comment" id="input-comment-${movie.id}"/>
-    <button type="submit" class="btn" id="submit-comment-${movie.id}">Submit</button>
-    </form>
-    <h4 class="comment-heading">Comments:</h4>
-    <div class="comment-list" id="comment-list-${movie.id}"></div>
+  <form id="comment-form-${movie.id}">
+     <input type="text" placeholder="comment here ..." class="input-comment" id="input-comment-${
+       movie.id
+     }"/>
+     <button type="submit" class="btn" id="submit-comment-${
+       movie.id
+     }">Submit</button>
+   </form>
+  <h4 class="comment-heading">Comments:</h4>
+  <div class="comment-list" id="comment-list-${movie.id}"></div>
   `;
 
   modal.style.display = "block";
@@ -69,6 +93,24 @@ function showMovieInfo(movie) {
   closeModal.onclick = function () {
     modal.style.display = "none";
   };
+
+  const allStars = document.querySelectorAll(".star");
+  allStars.forEach((star, index) => {
+    star.addEventListener("click", function (event) {
+      event.stopPropagation();
+      const rating = index + 1;
+
+      allStars.forEach((star, i) => {
+        if (i < rating) {
+          star.innerHTML = "&#9733;";
+        } else {
+          star.innerHTML = "&#9734;";
+        }
+      });
+
+      movie.rating = rating;
+    });
+  });
 
   const commentForm = document.getElementById(`comment-form-${movie.id}`);
   commentForm.addEventListener("submit", function (event) {
@@ -115,13 +157,30 @@ function displayComments(movieId, movieComments) {
 }
 
 function searchMovies(keyword) {
-  searchIsActive = true;
-  const lowerCaseKeyword = keyword.toLowerCase();
-  filteredMovies = movies.filter((movie) =>
-    movie.title.toLowerCase().includes(lowerCaseKeyword)
-  );
+  searchKeyword = keyword.toLowerCase();
+  filterMovies();
+}
 
-  displayMovies(filteredMovies, keyword);
+function filterMovies() {
+  searchIsActive = true;
+  let moviesToDisplay = [...movies];
+
+  // Apply keyword filter
+  if (searchKeyword) {
+    moviesToDisplay = moviesToDisplay.filter((movie) =>
+      movie.title.toLowerCase().includes(searchKeyword)
+    );
+  }
+
+  // Apply genre filter
+  if (selectedGenre !== "All") {
+    moviesToDisplay = moviesToDisplay.filter((movie) =>
+      movie.genre.split(", ").includes(selectedGenre)
+    );
+  }
+  filteredMovies = moviesToDisplay;
+
+  displayMovies(moviesToDisplay);
 }
 
 function sortMovies(movieList, sortBy) {
@@ -152,32 +211,59 @@ function displayMovies(movieList, keyword) {
       movieGrid.appendChild(movieCard);
     });
   }
+}
 
-  const allStars = document.querySelectorAll(".star");
-  allStars.forEach((star) => {
-    star.addEventListener("click", function (event) {
-      event.stopPropagation();
-      const movieCard = star.closest(".movie-card");
-      const movieDiv = movieCard.querySelector(".star-rating");
-      const movieId = movieDiv.getAttribute("data-movie-id");
+async function fetchData() {
+  try {
+    const resp = await fetch(
+      "https://raw.githubusercontent.com/bhumikama/bhumikama.github.io/main/movies.json"
+    );
+    const data = await resp.json();
+    movies = data;
+    displayMovies(movies);
+    generateGenreTags();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-      const stars = movieDiv.querySelectorAll(".star");
-      const index = Array.from(stars).indexOf(star);
-      const rating = index + 1;
+function generateGenreTags() {
+  const genres = ["Comedy", "Family", "Adventure", "Drama", "Action"];
 
-      stars.forEach((star, i) => {
-        if (i < rating) {
-          star.innerHTML = "&#9733;";
-        } else {
-          star.innerHTML = "&#9734;";
-        }
-      });
-
-      const movie = movieList.find((m) => m.id === parseInt(movieId));
-      if (movie) {
-        movie.rating = rating;
-      }
+  const genreTagsContainer = document.getElementById("genre-tags");
+  genreTagsContainer.innerHTML =
+    '<a href="#" class="genre-tag selected" data-genre="All">All</a>';
+  genres.forEach((genre) => {
+    const genreTag = document.createElement("a");
+    genreTag.classList.add("genre-tag");
+    genreTag.textContent = genre;
+    genreTag.href = "#";
+    genreTag.setAttribute("data-genre", genre);
+    genreTag.addEventListener("click", function (event) {
+      event.preventDefault();
+      document
+        .querySelectorAll(".genre-tag")
+        .forEach((tag) => tag.classList.remove("selected"));
+      genreTag.classList.add("selected");
+      selectedGenre = genreTag.getAttribute("data-genre");
+      filterMovies();
     });
+    genreTagsContainer.appendChild(genreTag);
+  });
+
+  const allTag = document.querySelector(".genre-tag[data-genre='All']");
+  allTag.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    document
+      .querySelectorAll(".genre-tag")
+      .forEach((tag) => tag.classList.remove("selected"));
+
+    allTag.classList.add("selected");
+
+    selectedGenre = "All";
+
+    filterMovies();
   });
 }
 
@@ -220,21 +306,8 @@ function calculateTimeSpent() {
   }, 1000);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetch(
-    "https://raw.githubusercontent.com/bhumikama/bhumikama.github.io/main/movies.json"
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Could not fetch resource");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      movies = data;
-      displayMovies(movies);
-    })
-    .catch((error) => console.error(error));
+document.addEventListener("DOMContentLoaded", async () => {
+  await fetchData();
 
   const searchBar = document.getElementById("search-bar");
   const searchButton = document.getElementById("search-button");
