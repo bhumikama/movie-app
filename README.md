@@ -1,49 +1,33 @@
-**Movie App[week1]**
+1. **Project Overview**
 
-iMovies is a web application that showcases a collection of movies in a grid format with their details, allowing users to view movie information, rate them with star ratings, and leave comments.
+        The Movie App is a web-based application designed to help users browse, search, and manage their favorite movies.
+        It provides a user-friendly interface for exploring a collection of movies, filtering them by genre, searching by title,
+        and marking movies as favorites. The app incorporates various advanced JavaScript techniques, including asynchronous operations
+       and API interactions, to enhance functionality and user experience.
 
-Features
+3. **Features**
 
-Display a grid of movie cards with movie posters.
+      - **Browse Movies**: Users can view a list of available movies, each displayed as a card with key details like title and poster.
 
-Click on the info icon to view detailed information about each movie in a modal.
+      - **Search Functionality**: Users can search for movies by entering a keyword. The app filters and displays movies whose titles match the search term.
 
-Star rating system allows users to rate movies by clicking on stars.
+      - **Genre Filtering**: Users can filter movies by selecting a specific genre, making it easier to find movies of interest.
 
-Users can leave comments on each movie.
+      - **Favorite Movies**: Users can mark movies as favorites by clicking a heart icon. These favorites are stored locally and can be viewed separately.
 
-Responsive design for various screen sizes.
+      - **Separate Favorites Page**: The app includes a dedicated favorites page where users can view only their favorite movies.
 
+4. **Technical Aspects**
+   
+   - **Frontend**: The app's frontend is built using HTML, CSS, and JavaScript. It uses grid and flexbox layouts for responsive design and JavaScript for dynamic content rendering.
 
+   - **Local Storage**: The app uses the browser's local storage to persist favorite movies, ensuring that user preferences are saved across sessions.
 
-Usage
+5. **Key Functions**
+   - createMovieCard(movie): Generates the HTML structure for a movie card, including the title, poster, and heart icon for marking favorites.
 
-Upon opening the application (index.html), you will see a grid of movie cards.
+   - filterMovies(): Filters the movie list based on the selected genre and search keyword, updating the displayed movies accordingly.
 
-Click on any movie card to open a modal with detailed information about that movie.
+   - displayMovies(movies): Renders the filtered list of movies on the screen.
 
-Use the star icons to rate the movies.
-
-Leave comments using the input field and submit button provided in the modal.
-
-
-
-**[week2]**
-
-Features
-
-Display a list of movies with details like title, year, rating, and genre.
-
-Sort Movies: Sort the movies by title, year, or rating.
-
-Search Movies: Search for movies by title.
-
-
-Usage
-
-Click on the search icon to find movies by title.
-
-Use the sort dropdown to sort movies by title, year, or rating.
-
-Select "Sort By" in the sort dropdown to reset the display to the original grid.
-
+   - toggleLike(movieId): Adds or removes a movie from the user's favorites list, updating the local storage.
