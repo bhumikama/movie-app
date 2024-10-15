@@ -3,9 +3,13 @@
         The Movie App is a web-based application designed to help users browse, search, and manage their favorite movies.
         It provides a user-friendly interface for exploring a collection of movies, filtering them by genre, searching by title,
         and marking movies as favorites. The app incorporates various advanced JavaScript techniques, including asynchronous operations
-       and API interactions, to enhance functionality and user experience.
+        and API interactions, to enhance functionality and user experience.
+       
+2. **Live Demo**
 
-3. **Features**
+   [Movie App](https://bhumika-movies.netlify.app/)
+   
+4. **Features**
 
       - **Browse Movies**: Users can view a list of available movies, each displayed as a card with key details like title and poster.
 
@@ -17,13 +21,13 @@
 
       - **Separate Favorites Page**: The app includes a dedicated favorites page where users can view only their favorite movies.
 
-4. **Technical Aspects**
+5. **Technical Aspects**
    
    - **Frontend**: The app's frontend is built using HTML, CSS, and JavaScript. It uses grid and flexbox layouts for responsive design and JavaScript for dynamic content rendering.
 
    - **Local Storage**: The app uses the browser's local storage to persist favorite movies, ensuring that user preferences are saved across sessions.
 
-5. **Key Functions**
+6. **Key Functions**
    - createMovieCard(movie): Generates the HTML structure for a movie card, including the title, poster, and heart icon for marking favorites.
 
    - filterMovies(): Filters the movie list based on the selected genre and search keyword, updating the displayed movies accordingly.
